@@ -1,0 +1,143 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SakeStore - Modern E-Commerce</title>
+    <link rel="stylesheet" href="styles.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600;700&family=Playfair+Display:wght@700;900&display=swap" rel="stylesheet">
+</head>
+<body>
+    <div class="bg-circles">
+        <div class="circle circle-1"></div>
+        <div class="circle circle-2"></div>
+        <div class="circle circle-3"></div>
+    </div>
+    <header class="header">
+        <div class="container">
+            <div class="header-content">
+                <h1 class="logo">SakeStore</h1>
+                <nav class="nav">
+                    <button class="nav-btn active" data-view="products">Products</button>
+                    <button class="nav-btn" data-view="add-product">Add Product</button>
+                    <button class="nav-btn" data-view="reviews">Reviews</button>
+                </nav>
+            </div>
+        </div>
+    </header>
+
+    <main class="main">
+        <div class="container">
+            <section id="products-view" class="view active">
+                <div class="section-header">
+                    <h2 class="section-title">Discover Products</h2>
+                    <div class="filter-bar">
+                        <select id="category-filter" class="filter-select">
+                            <option value="">All Categories</option>
+                            <option value="Electronics">Electronics</option>
+                            <option value="Clothing">Clothing</option>
+                            <option value="Books">Books</option>
+                            <option value="Home & Garden">Home & Garden</option>
+                            <option value="Sports">Sports</option>
+                            <option value="Toys">Toys</option>
+                            <option value="Food">Food</option>
+                            <option value="Other">Other</option>
+                        </select>
+                        <div class="search-box">
+                            <input type="text" id="search-input" placeholder="Search products..." class="search-input">
+                        </div>
+                    </div>
+                </div>
+                <div id="products-grid" class="products-grid">
+                    <div class="loading">Loading products...</div>
+                </div>
+            </section>
+
+            <section id="add-product-view" class="view">
+                <div class="form-container">
+                    <h2 class="section-title">Add New Product</h2>
+                    <form id="product-form" class="product-form">
+                        <div class="form-group">
+                            <label for="product-name">Product Name *</label>
+                            <input type="text" id="product-name" required minlength="2" placeholder="Enter product name">
+                        </div>
+                        
+                        <div class="form-group">
+                            <label for="product-description">Description *</label>
+                            <textarea id="product-description" required minlength="10" rows="4" placeholder="Describe your product in detail..."></textarea>
+                        </div>
+                        
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label for="product-price">Price ($) *</label>
+                                <input type="number" id="product-price" required min="0" step="0.01" placeholder="0.00">
+                            </div>
+                            
+                            <div class="form-group">
+                                <label for="product-stock">Stock Quantity *</label>
+                                <input type="number" id="product-stock" required min="0" value="0" placeholder="0">
+                            </div>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label for="product-category">Category *</label>
+                            <select id="product-category" required>
+                                <option value="">Select a category</option>
+                                <option value="Electronics">Electronics</option>
+                                <option value="Clothing">Clothing</option>
+                                <option value="Books">Books</option>
+                                <option value="Home & Garden">Home & Garden</option>
+                                <option value="Sports">Sports</option>
+                                <option value="Toys">Toys</option>
+                                <option value="Food">Food</option>
+                                <option value="Other">Other</option>
+                            </select>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label for="product-image">Image URL</label>
+                            <input type="url" id="product-image" placeholder="https://example.com/image.jpg">
+                        </div>
+                        
+                        <div class="form-group checkbox-group">
+                            <label class="checkbox-label">
+                                <input type="checkbox" id="product-featured">
+                                <span>Featured Product</span>
+                            </label>
+                        </div>
+                        
+                        <button type="submit" class="btn btn-primary">Create Product</button>
+                    </form>
+                    <div id="form-message" class="form-message"></div>
+                </div>
+            </section>
+
+            <section id="reviews-view" class="view">
+                <div class="section-header">
+                    <h2 class="section-title">Product Reviews</h2>
+                </div>
+                <div id="reviews-list" class="reviews-list">
+                    <div class="loading">Loading reviews...</div>
+                </div>
+            </section>
+        </div>
+    </main>
+
+    <div id="product-modal" class="modal">
+        <div class="modal-content">
+            <button class="modal-close">&times;</button>
+            <div id="modal-body"></div>
+        </div>
+    </div>
+
+    <footer class="footer">
+        <div class="container">
+            <p>&copy; 2026 SakeStore.</p>
+        </div>
+    </footer>
+
+    <script src="script.js"></script>
+</body>
+</html>
