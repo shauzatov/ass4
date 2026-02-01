@@ -148,21 +148,21 @@ Screenshots are stored in the `res/` folder and demonstrate authentication, auth
 
 Test sequence:
 - ![s0.png](res/s0.png) — Server running
-- ![s1.png](res/s1.png — User registration
-- ![s2.png](res/s2.png — Admin registration
-- ![s3.png](res/s3.png — Public GET products
-- ![s4.png](res/s4.png — User forbidden to create product (403)
-- ![s5.png](res/s5.png — Admin creates product
-- ![s6.png](res/s6.png — Public GET product by ID
-- ![s7.png](res/s7.png — Admin updates product
-- ![s8.png](res/s8.png — Admin deletes product
-- ![s9.png](res/s9.png — User forbidden to create review
-- ![s10.png](res/s10.png — Admin creates review
-- ![s11.png](res/s11.png — Public GET reviews
-- ![s12.png](res/s12.png — User creates order
-- ![s13.png](res/s13.png — User views own orders
-- ![s14.png](res/s14.png — Admin views all orders
-- ![s15.png](res/s15.png — RBAC validation confirmation
+- ![s1.png](res/s1.png) — User registration
+- ![s2.png](res/s2.png)— Admin registration
+- ![s3.png](res/s3.png) — Public GET products
+- ![s4.png](res/s4.png) — User forbidden to create product (403)
+- ![s5.png](res/s5.png) — Admin creates product
+- ![s6.png](res/s6.png) — Public GET product by ID
+- ![s7.png](res/s7.png) — Admin updates product
+- ![s8.png](res/s8.png) — Admin deletes product
+- ![s9.png](res/s9.png) — User forbidden to create review
+- ![s10.png](res/s10.png) — Admin creates review
+- ![s11.png](res/s11.png) — Public GET reviews
+- ![s12.png](res/s12.png) — User creates order
+- ![s13.png](res/s13.png) — User views own orders
+- ![s14.png](res/s14.png) — Admin views all orders
+- ![s15.png](res/s15.png) — RBAC validation confirmation
 
 ---
 
