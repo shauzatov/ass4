@@ -180,6 +180,8 @@ JWT_EXPIRES_IN=7d
 Start the server:
 
 npm start
+
+```
 Conclusion
 This project demonstrates a secure and scalable backend system following modern best practices.
 It includes clean MVC architecture, authentication with JWT, role-based authorization, and documented API testing results.
