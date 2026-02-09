@@ -1,189 +1,323 @@
-# Online Store API — Assignment 4
+# Online Store — WT2 Final Project (Full-Stack App)
 
-## Overview
-This project is a RESTful backend API for an online store developed using Node.js, Express, and MongoDB.  
-The purpose of this assignment is to demonstrate proper backend architecture, authentication, and security practices.
-
-The application implements:
-- MVC (Model–View–Controller) architecture
-- Authentication with JWT (JSON Web Tokens)
-- Password hashing using bcrypt
-- Role-Based Access Control (RBAC)
-- Multi-object CRUD operations
-- API testing using Thunder Client
+A production-ready **full-stack Online Store** application built with **Node.js/Express + MongoDB (Atlas)** and a **vanilla HTML/CSS/JS frontend** served by the backend.  
+The project implements **JWT authentication**, **Role-Based Access Control (RBAC)**, full CRUD for business entities, relational integrity between MongoDB documents, and is deployed live on the web.
 
 ---
 
-## Project Structure (MVC)
+## Live Demo
 
-├── server.js
-├── models/
-│ ├── User.js
-│ ├── Product.js
-│ ├── Review.js
-│ └── Order.js
-├── controllers/
-│ ├── authController.js
-│ ├── productController.js
-│ ├── reviewController.js
-│ └── orderController.js
-├── routes/
-│ ├── authRoutes.js
-│ ├── productRoutes.js
-│ ├── reviewRoutes.js
-│ └── orderRoutes.js
-├── middleware/
-│ ├── auth.js
-│ ├── roles.js
-│ ├── validation.js
-│ └── error.js
-└── res/
-├── s0.png
-├── s1.png
-├── ...
-└── s15.png
+- **Production URL:** https://ass4-7g65.onrender.com  
+- **API Base URL:** https://ass4-7g65.onrender.com
 
+> If you redeploy and Render changes your URL, update this section.
 
 ---
 
-## Data Models
+## Project Goals (Final Requirements Mapping)
 
-### User
-Used only for authentication and authorization.
+This final project transforms the modular authenticated API from previous assignments into a complete full-stack application:
 
-Fields:
-- email
-- password (hashed using bcrypt)
-- role (user / admin)
-
----
-
-### Product (Primary Object)
-Represents products available in the store.
-
-Fields:
-- name
-- description
-- category
-- price
+- ✅ **Advanced Backend Completion:** all required business endpoints implemented (Products, Reviews, Orders, Auth)
+- ✅ **Relational Integrity:** entities are linked correctly in MongoDB (e.g., Review → Product, Order → User & Product)
+- ✅ **Advanced Middleware:** JWT auth + RBAC (admin-only operations)
+- ✅ **Frontend Integration:** UI connected to API with token storage and authorized requests
+- ✅ **State Management:** UI dynamically updates via JS fetch calls
+- ✅ **Responsive Design:** usable on desktop and mobile
+- ✅ **Deployment:** live public URL via Render + MongoDB Atlas + environment variables
 
 ---
 
-### Review (Secondary Object)
-Represents reviews related to products.
+## Features
 
-Fields:
-- productId
-- username
-- rating
-- comment
+### Authentication & Security
+- User **registration** and **login**
+- **JWT token** issued on login and used for protected routes
+- Passwords stored securely (hashing on server side)
+- Protected endpoints require `Authorization: Bearer <token>`
 
----
+### RBAC (Role-Based Access Control)
+- **Admin**
+  - Create / Update / Delete products
+  - View all orders
+- **User**
+  - View products and reviews
+  - Create reviews (requires login)
+  - Create orders (requires login)
+  - View only **own** orders
 
-### Order (Additional Business Object)
-Represents a purchase made by a user.
+### Business Logic
+- **Products**
+  - Public list & details
+  - Admin CRUD with validation
+- **Reviews**
+  - Public list and product-specific list
+  - Logged-in users can create reviews
+- **Orders**
+  - Logged-in users can create orders
+  - Users can view own orders
+  - Admin can view all orders
 
-Fields:
-- user
-- items
-- totalPrice
-- status
+### Validation & Error Handling
+- Server-side validation for key fields
+- Consistent error responses:
+  ```json
+  { "error": "Validation failed", "details": ["..."] }
+Tech Stack
+Backend: Node.js, Express
 
----
+Database: MongoDB Atlas, Mongoose
 
-## Authentication & Security
-- Passwords are hashed using bcrypt
-- Authentication is handled via JWT
-- Tokens are sent using the HTTP header:
+Auth: JSON Web Token (JWT)
 
-Authorization: Bearer <token>
+Frontend: HTML, CSS, Vanilla JavaScript
 
+Deployment: Render (backend + static frontend served by Express)
 
----
+Repository Structure
+Typical structure used in this project:
 
-## Role-Based Access Control (RBAC)
+.
+├─ server.js
+├─ package.json
+├─ .env.example
+├─ controllers/
+│  ├─ authController.js
+│  ├─ productController.js
+│  ├─ reviewController.js
+│  └─ orderController.js
+├─ routes/
+│  ├─ authRoutes.js
+│  ├─ productRoutes.js
+│  ├─ reviewRoutes.js
+│  └─ orderRoutes.js
+├─ models/
+│  ├─ User.js
+│  ├─ Product.js
+│  ├─ Review.js
+│  └─ Order.js
+├─ middleware/
+│  ├─ auth.js
+│  ├─ roles.js
+│  ├─ validation.js
+│  └─ error.js
+└─ public/
+   ├─ index.html
+   ├─ styles.css
+   └─ script.js
+Environment Variables
+Create a .env file in the project root (do not commit it). Example:
 
-| Role  | GET | POST | PUT | DELETE |
-|------|-----|------|-----|--------|
-| user | ✅  | ❌   | ❌  | ❌     |
-| admin| ✅  | ✅   | ✅  | ✅     |
-
-Rules:
-- GET requests are public
-- POST, PUT, DELETE requests are restricted to admin users
-- Orders can be created by any authenticated user
-- Users can view only their own orders
-- Admins can view all orders
-
----
-
-## API Endpoints
-
-### Authentication
-- POST /auth/register
-- POST /auth/login
-
-### Products
-- GET /products
-- GET /products/:id
-- POST /products (admin only)
-- PUT /products/:id (admin only)
-- DELETE /products/:id (admin only)
-
-### Reviews
-- GET /reviews
-- POST /reviews (admin only)
-
-### Orders
-- POST /orders (authenticated users)
-- GET /orders/my (user only)
-- GET /orders (admin only)
-
----
-
-## API Testing (Thunder Client)
-
-All endpoints were tested using Thunder Client.  
-Screenshots are stored in the `res/` folder and demonstrate authentication, authorization, and CRUD behavior.
-
-Test sequence:
-- ![s0.png](res/s0.png) — Server running
-- ![s1.png](res/s1.png) — User registration
-- ![s2.png](res/s2.png)— Admin registration
-- ![s3.png](res/s3.png) — Public GET products
-- ![s4.png](res/s4.png) — User forbidden to create product (403)
-- ![s5.png](res/s5.png) — Admin creates product
-- ![s6.png](res/s6.png) — Public GET product by ID
-- ![s7.png](res/s7.png) — Admin updates product
-- ![s8.png](res/s8.png) — Admin deletes product
-- ![s9.png](res/s9.png) — User forbidden to create review
-- ![s10.png](res/s10.png) — Admin creates review
-- ![s11.png](res/s11.png) — Public GET reviews
-- ![s12.png](res/s12.png) — User creates order
-- ![s13.png](res/s13.png) — User views own orders
-- ![s14.png](res/s14.png) — Admin views all orders
-- ![s15.png](res/s15.png) — RBAC validation confirmation
-
----
-
-## How to Run the Project
-
-1. Install dependencies:
-```bash
-npm install
-Create a .env file:
-
-PORT=3000
-MONGODB_URI=mongodb://127.0.0.1:27017/online-store
+MONGODB_URI=mongodb+srv://<user>:<password>@<cluster>/<dbName>?retryWrites=true&w=majority
 JWT_SECRET=veryLongSecret
 JWT_EXPIRES_IN=7d
-Start the server:
+PORT=3000
+Notes
+In production on Render, do not hardcode PORT. Render provides it automatically through process.env.PORT.
 
+Use MongoDB Atlas connection string (Compass is only a client).
+
+How to Run Locally
+1) Install dependencies
+npm install
+2) Configure environment
+Create .env (see above) and set:
+
+MONGODB_URI
+
+JWT_SECRET
+
+JWT_EXPIRES_IN
+
+3) Start the server
 npm start
+4) Open the app
+Frontend (served by backend):
+http://localhost:3000
+(or your configured PORT)
 
-```
-Conclusion
-This project demonstrates a secure and scalable backend system following modern best practices.
-It includes clean MVC architecture, authentication with JWT, role-based authorization, and documented API testing results.
+How to Use the App (UI)
+Open the website (local or live)
 
-The application can be extended further with features such as payments or a shopping cart.
+Go to Auth
+
+Register a new account
+
+Login → the app stores JWT and uses it for protected requests
+
+If you register/login as admin, you will see Admin actions for product management
+
+Use Products / Reviews / Orders sections to interact with the system
+
+API Documentation
+Base URL
+Local: http://localhost:3000
+
+Production: https://ass4-7g65.onrender.com
+
+Authentication Header
+For protected endpoints:
+
+Authorization: Bearer <JWT_TOKEN>
+Endpoints Overview
+Auth
+Method	Endpoint	Auth	Description
+POST	/auth/register	No	Register a new user (role can be user or admin)
+POST	/auth/login	No	Login and receive JWT token
+Register Body
+
+email (string, required)
+
+password (string, required)
+
+role (string, optional: user / admin)
+
+Login Body
+
+email (string, required)
+
+password (string, required)
+
+Login Response
+
+token (string)
+
+user (object: id/email/role)
+
+Products
+Method	Endpoint	Auth	Role	Description
+GET	/products	No	—	List all products
+GET	/products/:id	No	—	Get product by id
+POST	/products	Yes	admin	Create product
+PUT	/products/:id	Yes	admin	Update product
+DELETE	/products/:id	Yes	admin	Delete product
+Create/Update Fields
+
+name (string, min 2)
+
+category (string, required)
+
+description (string, min 10)
+
+price (number, >= 0)
+
+stock (number, >= 0, optional if supported)
+
+imageUrl (string, optional)
+
+featured (boolean, optional)
+
+Reviews
+Method	Endpoint	Auth	Description
+GET	/reviews	No	List all reviews
+GET	/reviews/product/:productId	No	List reviews for a product
+POST	/reviews	Yes	Create review (logged-in user)
+Create Review Fields
+
+productId (string, required)
+
+rating (integer 1..5, required)
+
+comment (string, min length, required)
+
+The server links the review to the user (from JWT) and to the product.
+
+Orders
+Method	Endpoint	Auth	Role	Description
+POST	/orders	Yes	user/admin	Create order
+GET	/orders/my	Yes	user/admin	Get current user’s orders
+GET	/orders	Yes	admin	Get all orders
+Create Order Fields
+
+productId (string, required)
+
+quantity (integer, >= 1, required)
+
+The server links the order to the user (from JWT) and product(s) in MongoDB.
+
+RBAC Summary
+Action	Guest	User	Admin
+View products	✅	✅	✅
+View reviews	✅	✅	✅
+Create review	❌	✅	✅
+Create order	❌	✅	✅
+View my orders	❌	✅	✅
+View all orders	❌	❌	✅
+Create product	❌	❌	✅
+Update product	❌	❌	✅
+Delete product	❌	❌	✅
+Deployment (Render + MongoDB Atlas)
+Render Service Settings
+Type: Web Service
+
+Build Command: npm install (or npm ci)
+
+Start Command: npm start
+
+Render Environment Variables
+Set these in Render → Service → Environment:
+
+MONGODB_URI
+
+JWT_SECRET
+
+JWT_EXPIRES_IN
+
+NODE_ENV=production
+
+Do not set PORT manually on Render.
+
+MongoDB Atlas Checklist
+Database user created (username/password)
+
+Network access allows Render to connect (0.0.0.0/0 for academic project)
+
+Correct mongodb+srv://... URI used in Render env variables
+
+Postman Collection
+A Postman/Thunder Client collection is required for final submission.
+Include your exported collection file in the repository root, for example:
+
+postman_collection.json (recommended name)
+
+Required tests
+Auth: register + login
+
+Products: GET list, GET by id, POST (admin), PUT (admin), DELETE (admin)
+
+Reviews: GET all, GET by product, POST (auth)
+
+Orders: POST (auth), GET my orders (auth), GET all orders (admin)
+
+Common Troubleshooting
+401 Unauthorized
+Missing/incorrect Authorization: Bearer <token>
+
+Token expired
+
+Not logged in
+
+403 Forbidden
+You are logged in as user but trying to do admin operation
+
+400 Bad Request
+Validation failed (missing fields, wrong types, short description, etc.)
+
+Check response body for "details" array
+
+MongoDB connection errors on Render
+Wrong username/password in URI
+
+Password contains special characters and is not URL-encoded
+
+Atlas Network Access does not allow your service IP
+
+Wrong env var name in Render (must match process.env.MONGODB_URI)
+
+Author
+WT2 Final Project — Online Store
+Student: Shauzat Sayakhat   
+
+License
+This project is created for educational purposes.
+

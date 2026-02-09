@@ -1,4 +1,5 @@
 const API_URL = window.API_URL || (location.origin === "null" ? "http://localhost:3000" : "");
+const API_BASE = API_URL ? `${API_URL}/api` : "/api";
 const SESSION_KEY = "session_v1";
 const CART_KEY = "cart_v1";
 
@@ -104,35 +105,40 @@ function isAdmin() {
   return getSession()?.user?.role === "admin";
 }
 
-async function api(path, { method = "GET", body, auth = false } = {}) {
+async function api(path, { method = "GET", body } = {}) {
+  const session = typeof getSession === "function" ? getSession() : null;
+  const token = session?.token;
+
   const headers = {};
-  if (body !== undefined) headers["Content-Type"] = "application/json";
-  if (auth) {
-    const token = getSession()?.token;
-    if (token) headers.Authorization = `Bearer ${token}`;
+  let payload;
+
+  if (body !== undefined) {
+    headers["Content-Type"] = "application/json";
+    payload = JSON.stringify(body);
   }
+
+  if (token) headers.Authorization = `Bearer ${token}`;
 
   const res = await fetch(`${API_URL}${path}`, {
     method,
     headers,
-    body: body !== undefined ? JSON.stringify(body) : undefined,
+    body: payload
   });
 
   let data = {};
-  try {
-    data = await res.json();
-  } catch {}
+  const text = await res.text().catch(() => "");
+  try { data = text ? JSON.parse(text) : {}; } catch { data = { raw: text }; }
 
   if (!res.ok) {
-    const msg = (Array.isArray(data?.details) ? data.details.join("; ") : "") || data?.error || data?.message || `Request failed (${res.status})`;
-    const err = new Error(msg);
-    err.status = res.status;
-    err.data = data;
-    throw err;
+    const msg = Array.isArray(data.details)
+      ? data.details.join(", ")
+      : (data.error || data.message || data.raw || `HTTP ${res.status}`);
+    throw new Error(msg);
   }
 
   return data;
 }
+
 
 function applyRoleUI() {
   const s = getSession();
