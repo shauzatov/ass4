@@ -10,8 +10,6 @@ The project implements **JWT authentication**, **Role-Based Access Control (RBAC
 - **Production URL:** https://ass4-7g65.onrender.com  
 - **API Base URL:** https://ass4-7g65.onrender.com
 
-> If you redeploy and Render changes your URL, update this section.
-
 ---
 
 ## Project Goals (Final Requirements Mapping)
