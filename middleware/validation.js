@@ -28,35 +28,29 @@ const validateProduct = (req, res, next) => {
   next();
 };
 
-const validateReview = (req, res, next) => {
-  const { productId, username, rating, comment } = req.body;
-  const errors = [];
+function validateReview(req, res, next) {
+  const { productId, rating, comment, username } = req.body;
 
-  if (!productId) {
-    errors.push('Product ID is required');
+  if (!productId || typeof productId !== "string") {
+    return res.status(400).json({ error: "Validation failed", details: ["productId is required"] });
   }
 
-  if (!username || username.trim().length < 2) {
-    errors.push('Username is required and must be at least 2 characters long');
+  if (!username || typeof username !== "string" || username.trim().length < 2) {
+    return res.status(400).json({ error: "Validation failed", details: ["Username is required and must be at least 2 characters long"] });
   }
 
-  if (!rating || rating < 1 || rating > 5) {
-    errors.push('Rating is required and must be between 1 and 5');
+  const r = Number(rating);
+  if (!Number.isInteger(r) || r < 1 || r > 5) {
+    return res.status(400).json({ error: "Validation failed", details: ["rating must be integer 1..5"] });
   }
 
-  if (!comment || comment.trim().length < 5) {
-    errors.push('Comment is required and must be at least 5 characters long');
-  }
-
-  if (errors.length > 0) {
-    return res.status(400).json({ 
-      error: 'Validation failed', 
-      details: errors 
-    });
+  if (!comment || typeof comment !== "string" || comment.trim().length < 3) {
+    return res.status(400).json({ error: "Validation failed", details: ["comment is required"] });
   }
 
   next();
-};
+}
+
 
 module.exports = {
   validateProduct,

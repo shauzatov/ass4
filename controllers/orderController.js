@@ -87,4 +87,32 @@ async function getAllOrders(req, res, next) {
   }
 }
 
-module.exports = { createOrder, getMyOrders, getAllOrders };
+async function updateOrderStatus(req, res, next) {
+  try {
+    const { status } = req.body;
+    const allowed = ["created", "completed", "cancelled"];
+    if (!allowed.includes(status)) {
+      return res.status(400).json({ error: "Invalid status" });
+    }
+
+    const updated = await Order.findByIdAndUpdate(
+      req.params.id,
+      { status },
+      { new: true, runValidators: true }
+    )
+      .populate("user", "email role")
+      .populate("items.product", "name price");
+
+    if (!updated) return res.status(404).json({ error: "Order not found" });
+
+    res.json({ message: "Order status updated", order: updated });
+  } catch (e) {
+    next(e);
+  }
+}
+
+
+module.exports = { createOrder, getMyOrders, getAllOrders, updateOrderStatus };
+
+
+

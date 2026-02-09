@@ -1,143 +1,349 @@
-<!DOCTYPE html>
-<html lang="en">
+<!doctype html>
+<html lang="ru">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>SakeStore - Modern E-Commerce</title>
-    <link rel="stylesheet" href="styles.css">
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600;700&family=Playfair+Display:wght@700;900&display=swap" rel="stylesheet">
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Online Store</title>
+  <link rel="stylesheet" href="styles.css" />
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600;700;800&family=Playfair+Display:wght@700;800;900&display=swap" rel="stylesheet">
 </head>
 <body>
-    <div class="bg-circles">
-        <div class="circle circle-1"></div>
-        <div class="circle circle-2"></div>
-        <div class="circle circle-3"></div>
+  <div class="bg-circles" aria-hidden="true">
+    <div class="circle circle-1"></div>
+    <div class="circle circle-2"></div>
+    <div class="circle circle-3"></div>
+  </div>
+
+  <header class="header">
+    <div class="container header-content">
+      <div class="logo" id="homeBtn">Online Store</div>
+
+      <nav class="nav">
+        <button class="nav-btn active" data-view="products">Products</button>
+        <button class="nav-btn" data-view="reviews">Reviews</button>
+        <button class="nav-btn" data-view="orders">Orders</button>
+        <button class="nav-btn admin-only" data-view="admin" id="adminTab">Admin</button>
+        <button class="nav-btn" data-view="auth" id="authTab">Auth</button>
+      </nav>
+
+      <div class="authbar">
+        <div id="authStatus" class="muted">Not logged in</div>
+        <button id="logoutBtn" class="btn btn-danger hidden" type="button">Logout</button>
+      </div>
     </div>
-    <header class="header">
-        <div class="container">
-            <div class="header-content">
-                <h1 class="logo">SakeStore</h1>
-                <nav class="nav">
-                    <button class="nav-btn active" data-view="products">Products</button>
-                    <button class="nav-btn" data-view="add-product">Add Product</button>
-                    <button class="nav-btn" data-view="reviews">Reviews</button>
-                </nav>
+  </header>
+
+  <main class="main container">
+    <section class="view active" id="products-view">
+      <div class="section-header">
+        <h2 class="section-title">Products</h2>
+        <div class="filter-bar">
+          <select id="category-filter" class="filter-select">
+            <option value="">All categories</option>
+          </select>
+          <div class="search-box">
+            <input id="search-input" class="search-input" placeholder="Search by name or description..." />
+          </div>
+          <button id="refreshProducts" class="btn btn-secondary" type="button">Refresh</button>
+        </div>
+      </div>
+
+      <div class="split">
+        <div>
+          <div id="productsMsg" class="form-message"></div>
+          <div id="products-grid" class="products-grid"></div>
+        </div>
+
+        <aside class="side-card">
+          <div class="side-head">
+            <div>
+              <h3 class="side-title">Cart</h3>
+              <div class="muted small" id="cartSummary">0 items</div>
             </div>
+            <button class="btn btn-secondary" id="clearCartBtn" type="button">Clear</button>
+          </div>
+
+          <div id="cartList" class="cart-list"></div>
+
+          <div class="cart-footer">
+            <div class="cart-total">
+              <div class="muted">Total</div>
+              <div class="total-num" id="cartTotal">$0.00</div>
+            </div>
+            <button class="btn btn-primary" id="createOrderBtn" type="button">Create Order</button>
+            <div id="cartMsg" class="form-message"></div>
+          </div>
+
+          <div class="divider"></div>
+
+          <h3 class="side-title">Quick Add</h3>
+          <form id="quickAddForm" class="compact-form">
+            <input name="productId" placeholder="productId" required />
+            <input name="quantity" type="number" min="1" step="1" value="1" required />
+            <button class="btn btn-secondary" type="submit">Add</button>
+          </form>
+          <div class="muted small">Tip: Open product card to copy id.</div>
+        </aside>
+      </div>
+    </section>
+
+    <section class="view" id="reviews-view">
+      <div class="section-header">
+        <h2 class="section-title">Reviews</h2>
+        <div class="filter-bar">
+          <button id="refreshReviews" class="btn btn-secondary" type="button">Refresh</button>
         </div>
-    </header>
+      </div>
 
-    <main class="main">
-        <div class="container">
-            <section id="products-view" class="view active">
-                <div class="section-header">
-                    <h2 class="section-title">Discover Products</h2>
-                    <div class="filter-bar">
-                        <select id="category-filter" class="filter-select">
-                            <option value="">All Categories</option>
-                            <option value="Electronics">Electronics</option>
-                            <option value="Clothing">Clothing</option>
-                            <option value="Books">Books</option>
-                            <option value="Home & Garden">Home & Garden</option>
-                            <option value="Sports">Sports</option>
-                            <option value="Toys">Toys</option>
-                            <option value="Food">Food</option>
-                            <option value="Other">Other</option>
-                        </select>
-                        <div class="search-box">
-                            <input type="text" id="search-input" placeholder="Search products..." class="search-input">
-                        </div>
-                    </div>
-                </div>
-                <div id="products-grid" class="products-grid">
-                    <div class="loading">Loading products...</div>
-                </div>
-            </section>
-
-            <section id="add-product-view" class="view">
-                <div class="form-container">
-                    <h2 class="section-title">Add New Product</h2>
-                    <form id="product-form" class="product-form">
-                        <div class="form-group">
-                            <label for="product-name">Product Name *</label>
-                            <input type="text" id="product-name" required minlength="2" placeholder="Enter product name">
-                        </div>
-                        
-                        <div class="form-group">
-                            <label for="product-description">Description *</label>
-                            <textarea id="product-description" required minlength="10" rows="4" placeholder="Describe your product in detail..."></textarea>
-                        </div>
-                        
-                        <div class="form-row">
-                            <div class="form-group">
-                                <label for="product-price">Price ($) *</label>
-                                <input type="number" id="product-price" required min="0" step="0.01" placeholder="0.00">
-                            </div>
-                            
-                            <div class="form-group">
-                                <label for="product-stock">Stock Quantity *</label>
-                                <input type="number" id="product-stock" required min="0" value="0" placeholder="0">
-                            </div>
-                        </div>
-                        
-                        <div class="form-group">
-                            <label for="product-category">Category *</label>
-                            <select id="product-category" required>
-                                <option value="">Select a category</option>
-                                <option value="Electronics">Electronics</option>
-                                <option value="Clothing">Clothing</option>
-                                <option value="Books">Books</option>
-                                <option value="Home & Garden">Home & Garden</option>
-                                <option value="Sports">Sports</option>
-                                <option value="Toys">Toys</option>
-                                <option value="Food">Food</option>
-                                <option value="Other">Other</option>
-                            </select>
-                        </div>
-                        
-                        <div class="form-group">
-                            <label for="product-image">Image URL</label>
-                            <input type="url" id="product-image" placeholder="https://example.com/image.jpg">
-                        </div>
-                        
-                        <div class="form-group checkbox-group">
-                            <label class="checkbox-label">
-                                <input type="checkbox" id="product-featured">
-                                <span>Featured Product</span>
-                            </label>
-                        </div>
-                        
-                        <button type="submit" class="btn btn-primary">Create Product</button>
-                    </form>
-                    <div id="form-message" class="form-message"></div>
-                </div>
-            </section>
-
-            <section id="reviews-view" class="view">
-                <div class="section-header">
-                    <h2 class="section-title">Product Reviews</h2>
-                </div>
-                <div id="reviews-list" class="reviews-list">
-                    <div class="loading">Loading reviews...</div>
-                </div>
-            </section>
+      <div class="split">
+        <div>
+          <div id="reviewsMsg" class="form-message"></div>
+          <div id="reviews-list" class="reviews-list"></div>
         </div>
-    </main>
 
-    <div id="product-modal" class="modal">
-        <div class="modal-content">
-            <button class="modal-close">&times;</button>
-            <div id="modal-body"></div>
-        </div>
+        <aside class="side-card">
+          <h3 class="side-title">Create Review</h3>
+          <div class="muted small">Login required. Username will be taken from your account.</div>
+
+          <form id="createReviewForm" class="product-form">
+            <div class="form-group">
+              <label>Product ID</label>
+              <input name="productId" placeholder="productId" required />
+            </div>
+
+            <div class="form-row">
+              <div class="form-group">
+                <label>Rating</label>
+                <input name="rating" type="number" min="1" max="5" step="1" required />
+              </div>
+              <div class="form-group">
+                <label>Comment</label>
+                <input name="comment" minlength="3" required />
+              </div>
+            </div>
+
+            <button class="btn btn-primary" type="submit">Submit Review</button>
+          </form>
+
+          <div id="reviewFormMsg" class="form-message"></div>
+        </aside>
+      </div>
+    </section>
+
+    <section class="view" id="orders-view">
+      <div class="section-header">
+        <h2 class="section-title">Orders</h2>
+        <div class="muted">User can create and view own orders. Admin can view all orders and update status.</div>
+      </div>
+
+      <div class="two-panels">
+        <section class="panel">
+          <div class="panel-head">
+            <h3>My Orders</h3>
+            <button id="loadMyOrders" class="btn btn-secondary" type="button">Load</button>
+          </div>
+          <div id="myOrders" class="orders-list"></div>
+        </section>
+
+        <section class="panel admin-only">
+          <div class="panel-head">
+            <h3>All Orders</h3>
+            <button id="loadAllOrders" class="btn btn-secondary" type="button">Load</button>
+          </div>
+          <div id="allOrders" class="orders-list"></div>
+        </section>
+      </div>
+
+      <div id="ordersMsg" class="form-message"></div>
+    </section>
+
+    <section class="view admin-only" id="admin-view">
+      <div class="section-header">
+        <h2 class="section-title">Admin Panel</h2>
+        <div class="muted">Only admin can create/update/delete products.</div>
+      </div>
+
+      <div class="two-panels">
+        <section class="panel">
+          <h3>Create Product</h3>
+          <form id="createProductForm" class="product-form">
+            <div class="form-row">
+              <div class="form-group">
+                <label>Name</label>
+                <input name="name" minlength="2" required />
+              </div>
+              <div class="form-group">
+                <label>Category</label>
+                <input name="category" required />
+              </div>
+            </div>
+
+            <div class="form-group">
+              <label>Description</label>
+              <textarea name="description" minlength="10" required></textarea>
+            </div>
+
+            <div class="form-row">
+              <div class="form-group">
+                <label>Price</label>
+                <input name="price" type="number" min="0" step="0.01" required />
+              </div>
+              <div class="form-group">
+                <label>Stock</label>
+                <input name="stock" type="number" min="0" step="1" value="0" />
+              </div>
+            </div>
+
+            <div class="form-row">
+              <div class="form-group">
+                <label>Image URL</label>
+                <input name="imageUrl" placeholder="optional" />
+              </div>
+              <div class="form-group checkbox-group">
+                <label class="checkbox-label">
+                  <input name="featured" type="checkbox" />
+                  <span>Featured</span>
+                </label>
+              </div>
+            </div>
+
+            <button class="btn btn-primary" type="submit">Create</button>
+          </form>
+        </section>
+
+        <section class="panel">
+          <h3>Update Product</h3>
+          <form id="updateProductForm" class="product-form">
+            <div class="form-group">
+              <label>Product ID</label>
+              <input name="id" required />
+            </div>
+
+            <div class="form-row">
+              <div class="form-group">
+                <label>Name</label>
+                <input name="name" placeholder="leave empty to keep" />
+              </div>
+              <div class="form-group">
+                <label>Category</label>
+                <input name="category" placeholder="leave empty to keep" />
+              </div>
+            </div>
+
+            <div class="form-group">
+              <label>Description</label>
+              <textarea name="description" placeholder="leave empty to keep"></textarea>
+            </div>
+
+            <div class="form-row">
+              <div class="form-group">
+                <label>Price</label>
+                <input name="price" type="number" min="0" step="0.01" placeholder="leave empty to keep" />
+              </div>
+              <div class="form-group">
+                <label>Stock</label>
+                <input name="stock" type="number" min="0" step="1" placeholder="leave empty to keep" />
+              </div>
+            </div>
+
+            <div class="form-row">
+              <div class="form-group">
+                <label>Image URL</label>
+                <input name="imageUrl" placeholder="leave empty to keep" />
+              </div>
+              <div class="form-group checkbox-group">
+                <label class="checkbox-label">
+                  <input name="featured" type="checkbox" />
+                  <span>Featured</span>
+                </label>
+              </div>
+            </div>
+
+            <button class="btn btn-primary" type="submit">Update</button>
+          </form>
+
+          <div class="divider"></div>
+
+          <h3>Delete Product</h3>
+          <form id="deleteProductForm" class="compact-form">
+            <input name="id" placeholder="productId" required />
+            <button class="btn btn-danger" type="submit">Delete</button>
+          </form>
+
+          <div id="adminMsg" class="form-message"></div>
+        </section>
+      </div>
+    </section>
+
+    <section class="view" id="auth-view">
+      <div class="section-header">
+        <h2 class="section-title">Authentication</h2>
+        <div class="muted">Register or login. Token is stored in localStorage and used automatically.</div>
+      </div>
+
+      <div class="two-panels">
+        <section class="panel">
+          <h3>Register</h3>
+          <form id="registerForm" class="product-form">
+            <div class="form-group">
+              <label>Email</label>
+              <input name="email" type="email" required />
+            </div>
+            <div class="form-group">
+              <label>Password</label>
+              <input name="password" type="password" minlength="6" required />
+            </div>
+            <div class="form-group">
+              <label>Role</label>
+              <select name="role">
+                <option value="user">user</option>
+                <option value="admin">admin</option>
+              </select>
+            </div>
+            <button class="btn btn-primary" type="submit">Register</button>
+          </form>
+        </section>
+
+        <section class="panel">
+          <h3>Login</h3>
+          <form id="loginForm" class="product-form">
+            <div class="form-group">
+              <label>Email</label>
+              <input name="email" type="email" required />
+            </div>
+            <div class="form-group">
+              <label>Password</label>
+              <input name="password" type="password" required />
+            </div>
+            <button class="btn btn-primary" type="submit">Login</button>
+          </form>
+
+          <div class="divider"></div>
+
+          <div class="muted small">Status</div>
+          <div id="authMsg" class="form-message"></div>
+        </section>
+      </div>
+    </section>
+  </main>
+
+  <div class="modal" id="product-modal" aria-hidden="true">
+    <div class="modal-content">
+      <button class="modal-close" type="button" id="modalCloseBtn">×</button>
+      <div id="modal-body"></div>
     </div>
+  </div>
 
-    <footer class="footer">
-        <div class="container">
-            <p>&copy; 2026 SakeStore.</p>
-        </div>
-    </footer>
+  <div class="toast" id="toast"></div>
 
-    <script src="script.js"></script>
+  <footer class="footer">
+    <div class="container">
+      @2026 Online Store. All rights reserved.
+    </div>
+  </footer>
+
+  <script src="script.js"></script>
 </body>
 </html>
