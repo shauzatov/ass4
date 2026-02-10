@@ -2,11 +2,6 @@ const Order = require("../models/order");
 const Product = require("../models/Product");
 const mongoose = require("mongoose");
 
-/**
- * Create new order
- * @route POST /api/orders
- * @access Private
- */
 async function createOrder(req, res, next) {
   try {
     const { items } = req.body;
