@@ -119,7 +119,7 @@ async function api(path, { method = "GET", body } = {}) {
 
   if (token) headers.Authorization = `Bearer ${token}`;
 
-  const res = await fetch(`${API_URL}${path}`, {
+  const res = await fetch(`${API_BASE}${path}`, {
     method,
     headers,
     body: payload
@@ -384,7 +384,8 @@ function buildStars(rating) {
 
 async function showProductDetails(productId) {
   try {
-    const product = await api(`/products/${productId}`);
+    const productRes = await api(`/products/${productId}`);
+    const product = productRes?.product ?? productRes;
     const reviewsData = await api(`/reviews/product/${productId}`);
     const productReviews = normalizeReviews(reviewsData);
 
@@ -737,30 +738,23 @@ async function updateProduct(form) {
   const id = String(fd.get("id") || "").trim();
   if (!id) return showMsg(els.adminMsg, "Product ID required", "error");
 
-  const patch = {
-    name: String(fd.get("name") || "").trim() || undefined,
-    category: String(fd.get("category") || "").trim() || undefined,
-    description: String(fd.get("description") || "").trim() || undefined,
-    price: fd.get("price") === "" ? undefined : Number(fd.get("price")),
-    stock: fd.get("stock") === "" ? undefined : Number(fd.get("stock")),
-    imageUrl: String(fd.get("imageUrl") || "").trim() || undefined,
-    featured: fd.get("featured") ? true : undefined,
+  const body = {
+    name: String(fd.get("name") || "").trim(),
+    category: String(fd.get("category") || "").trim(),
+    description: String(fd.get("description") || "").trim(),
+    imageUrl: String(fd.get("imageUrl") || "").trim(),
   };
+
+  const priceRaw = String(fd.get("price") ?? "").trim();
+  const stockRaw = String(fd.get("stock") ?? "").trim();
+  if (priceRaw !== "") body.price = Number(priceRaw);
+  if (stockRaw !== "") body.stock = Number(stockRaw);
+
+  if (fd.get("featured")) body.featured = true;
 
   try {
     showMsg(els.adminMsg, "", "");
-    const current = await api(`/products/${id}`);
-    const body = {
-      name: patch.name ?? current.name,
-      category: patch.category ?? current.category,
-      description: patch.description ?? current.description,
-      price: Number.isFinite(patch.price) ? patch.price : current.price,
-      stock: Number.isFinite(patch.stock) ? patch.stock : current.stock,
-      imageUrl: patch.imageUrl ?? current.imageUrl,
-      featured: patch.featured !== undefined ? patch.featured : current.featured,
-    };
-
-    await api(`/products/${id}`, { method: "PUT", auth: true, body });
+    await api(`/products/${id}`, { method: "PUT", body });
     showMsg(els.adminMsg, "Product updated", "success");
     await loadProducts();
     toast("Updated");
@@ -768,6 +762,7 @@ async function updateProduct(form) {
     showMsg(els.adminMsg, e.message, "error");
   }
 }
+
 
 async function deleteProductByForm(form) {
   if (!isAdmin()) return showMsg(els.adminMsg, "Admin only", "error");
